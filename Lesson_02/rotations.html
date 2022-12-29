@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title>Rotations Exercise</title>
+		<style>
+			body { margin: 0; }
+		</style>
+	</head>
+	<body>
+		<script src="https://threejs.org/build/three.js"></script>
+		<script>
+			const scene = new THREE.Scene();
+			const camera = new THREE.PerspectiveCamera( 75, window.innerWidth / window.innerHeight, 0.1, 1000 );
+
+			const renderer = new THREE.WebGLRenderer();
+            renderer.setClearColor(new THREE.Color(0xffffff));
+			renderer.setSize( window.innerWidth, window.innerHeight );
+			document.body.appendChild( renderer.domElement );
+
+            const axisCylinderGeometry = new THREE.CylinderGeometry( 0.1, 0.1, 1 );
+            const axiscylinderMaterialX = new THREE.MeshPhongMaterial( { 
+			color: 0x0000ff, 
+			opacity: 1, 
+			transparent: true 
+			} );
+            const axiscylinderMaterialY = new THREE.MeshPhongMaterial( { 
+			color: 0x00ff00, 
+			opacity: 1, 
+			transparent: true 
+			} );
+            const axiscylinderMaterialZ = new THREE.MeshPhongMaterial( { 
+			color: 0xff0000, 
+			opacity: 1, 
+			transparent: true 
+			} );
+
+            const axisCylinderX = new THREE.Mesh( axisCylinderGeometry, axiscylinderMaterialX );
+            const axisCylinderY = new THREE.Mesh( axisCylinderGeometry, axiscylinderMaterialY );
+            const axisCylinderZ = new THREE.Mesh( axisCylinderGeometry, axiscylinderMaterialZ );
+            axisCylinderX.position.set(0, 0, 1);
+            axisCylinderY.position.set(0, 0.5, 0.5);
+            axisCylinderZ.position.set(0.5, 0, 0.5);
+            axisCylinderX.rotation.x = Math.PI/2;
+            axisCylinderZ.rotation.z = Math.PI/2;
+            
+
+            const axis = new THREE.Object3D();
+            axis.add(axisCylinderX, axisCylinderY, axisCylinderZ);
+            axis.rotation.y = Math.PI/4;
+            scene.add(axis);
+
+			const boxGeometry = new THREE.BoxGeometry( 1, 1, 1 );
+			const glassMaterial = new THREE.MeshPhongMaterial( { 
+			color: 0x1888d9, 
+			opacity: 0.25, 
+			transparent: true 
+			} );
+            
+            const box = new THREE.Mesh( boxGeometry, glassMaterial );
+            box.scale.set(2, 1, 4);
+            const cylinderGeometry = new THREE.CylinderGeometry( 0.5, 0.5, 0.2 );
+            const cylinderMaterial = new THREE.MeshPhongMaterial( { 
+			color: 0x64271C, 
+			opacity: 1, 
+			transparent: true 
+			} );
+            const cylinder1 = new THREE.Mesh( cylinderGeometry, cylinderMaterial );
+            cylinder1.position.set(1, -0.5, 2);
+            cylinder1.rotation.x = Math.PI/2;
+            cylinder1.rotation.z = Math.PI/2;
+            const cylinder2 = new THREE.Mesh( cylinderGeometry, cylinderMaterial );
+            cylinder2.position.set(1, -0.5, -2);
+            cylinder2.rotation.x = Math.PI/2;
+            cylinder2.rotation.z = Math.PI/2;
+            const cylinder3 = new THREE.Mesh( cylinderGeometry, cylinderMaterial );
+            cylinder3.position.set(-1, -0.5, 2);
+            cylinder3.rotation.x = Math.PI/2;
+            cylinder3.rotation.z = Math.PI/2;
+            const cylinder4 = new THREE.Mesh( cylinderGeometry, cylinderMaterial );
+            cylinder4.position.set(-1, -0.5, -2);
+            cylinder4.rotation.x = Math.PI/2;
+            cylinder4.rotation.z = Math.PI/2;
+
+            const car = new THREE.Object3D();
+            car.add(box, cylinder1, cylinder2, cylinder3, cylinder4);
+            car.rotation.y = Math.PI/4;
+            scene.add(car);
+            
+            // Get the transformation matrices
+            console.log("car.matrix", car.matrix);
+            console.log("cylinder matrix", cylinder1.matrix);
+
+			camera.position.set( 1, 1, 5 );
+
+            const spotLight = new THREE.DirectionalLight( 0xffffff, 3 );
+			spotLight.position.set( 40, 60, 10 );
+			spotLight.castShadow = true;
+			spotLight.shadowMapWidth = 2048;
+			spotLight.shadowMapHeight= 2048;
+            scene.add( spotLight );
+
+            const alight = new THREE.AmbientLight(0xffffff);
+            scene.add(alight);
+
+            let step = 0;
+			function animate() {
+				requestAnimationFrame( animate );
+                step += 0.04;
+                car.position.x = (2 * Math.cos(step));
+                car.position.z = (2 * Math.cos(step));
+
+				renderer.render( scene, camera );
+			};
+
+			animate();
+		</script>
+	</body>
+</html>
